@@ -1,61 +1,40 @@
 #include<iostream>
 using namespace std;
 
+//全局变量的作用范围，一般是从定义位置开始到本程序文件的末尾。
+//在此作用域内，全局变量可以为程序中各个函数所引用。
+int i = 1;  //全局变量，静态存储区 。存在于程序的整个运行过程中。
 
-/*
-结构体计算规则：
-	每个单元的大小取决于结构体中最大基础类型的大小，
-	每个单元的大小必须是最大基础类型的整数倍；
-		上例中最大基础类型单元是int:占用4字节
-		char字符占用一个字节，则char name[20]占用20字节，是4的整数倍
-		char gender占用一个字节，但是空间提供4字节的空间
-	所以student结构体的占用内存为4+20+4=28字节
-*/
-struct student
+//外部衔接性即：一个文件中定义了i全局变量，在另一个文件中用extern对i进行外部声明。
+//全局变量用static声明，把该变量的作用域只限于本文件模块中，即取消外部衔接性。
+static int k = 2;
+
+int main(void)
 {
-	int num;
-	char name[20];
-	char gender;
-};
-
-//空类和空结构体一样占用一个字节，为了分配一个单独空间区分不同的空对象
-class emptyClass 
-{
-};
-
-/*	类中的数据成员也存在补齐，与结构体中情况类似，但补齐的标准长度不仅看子类，也看父类的最大对齐长度；
-	静态的数据成员不占用字节；
-	构造函数、析构函数、成员函数都不占用字节；
-*/
-class virClass
-{
-	int i;
-	char a[8];
-	virtual void fun(){}
-	/*虚函数和纯虚函数都不占用字节，但会申请指针，此时占用的空间为一个指针长度； ?
-		64位编译器指针占用8字节，64/8
-	虚函数和纯虚函数 ??“字节占用数” ?一样；
-	无继承时，多个虚函数、纯虚函数共享一个指针，占用字节为一个指针长度；
-	有继承时，有几个父类存在虚函数就需要多少个指针，此时子类的虚函数、纯虚函数不再占用字节；
-	*/
-};
-
-int main(int argc, char const *argv[])
-{
-	
-	student s = { 10,"asd",'M' };
-	cout << s.num << endl;				//10
-	cout << sizeof(s.num) << endl;		//4
-	cout << sizeof(s.name) << endl;		//20
-	cout << sizeof(s.gender) << endl;	//1
-	cout << sizeof(s) << endl;			//28
-
-	emptyClass ec;
-	cout << sizeof(ec) << endl;			//1
-
-	virClass vc;
-	cout << sizeof(vc) << endl;			//16
-
-	system("pause");					
+	static int a;  // 静态局部变量，静态存储区；有全局寿命，局部可见。
+	int b = -10;  // b, c为局部变量，具有动态生存期。
+	int c = 0;
+	void other(void);
+	cout << "---MAIN---\n";
+	cout << " i: " << i << " a: " << a << " b: " << b << " c: " << c << endl;//1 0 -10 0
+	c = c + 8;  other();// 33 4 0 15
+	cout << "---MAIN---\n";
+	cout << " i: " << i << " a: " << a << " b: " << b << " c: " << c << endl;//33 0 -10 8 
+	i = i + 10; other();  //75 6 4 15
+	other(); //107 8 6 15
+	system("pause");
 	return 0;
+}
+void other(void)
+{
+	static int a = 2;
+	static int b;
+	// a,b为静态局部变量，具有全局寿命，局部可见。
+	//只第一次进入函数时被初始化。
+	int c = 10;   // C为局部变量，常量存储区，具有动态生存期
+				  //每次进入函数时都初始化。
+	a = a + 2; i = i + 32; c = c + 5;
+	cout << "---OTHER---\n";
+	cout << " i: " << i << " a: " << a << " b: " << b << " c: " << c << endl;
+	b = a;
 }
