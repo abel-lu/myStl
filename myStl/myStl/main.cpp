@@ -1,55 +1,45 @@
 #include<iostream>
+#include<vector>
+#include <numeric>
 using namespace std;
 
-class A 
+//一群孩子站成一排，每一个孩子有自己的评分。现在需要给这些孩子发糖果，规则是如果一
+//个孩子的评分比自己身旁的一个孩子要高，那么这个孩子就必须得到比身旁孩子更多的糖果；所
+//有孩子至少要有一个糖果。求解最少需要多少个糖果
+
+int divideCandy(vector<int>& grade)
 {
-public:
-	//构造函数
-	A(int a, int b)
+	int size = grade.size();
+	if(size < 2) return size;
+
+	int n = grade.size();//n个小朋友
+	vector<int> candy(n,1);
+	/*思路：
+		从左到右遍历，右侧分数高的孩子比左边孩子多一个
+		再，从右到左遍历，
+	*/
+	for (int i = 0; i < n-1 ; i++)
 	{
-		R1 = a;
-		R2 = b;
+		(grade[i+1] > grade[i]) ? candy[i+1]= candy[i]+1:i;
 	}
-	//const区分成员重载函数
-	void print();
-	void print() const;
-
-	int x;
-	int y;
-
-private:
-	int R1, R2;
-};
-void A::print()
-{
-	cout << "普通调用" << endl;
-	cout << R1 << ":" << R2 << endl;
-}
-//实例化也需要带上
-void A::print() const
-{
-	cout << "常对象调用" << endl;
-	cout << R1 << ";" << R2 << endl;
+	for (int i = n-1; i > 0; i--)
+	{
+		if (grade[i-1] > grade[i])
+		{
+			if (!(candy[i-1] > candy[i]))
+				candy[i-1] = candy[i]+1;
+		}
+	}
+	int sum = accumulate(candy.begin(), candy.end(), 0);
+	return sum;
 }
 
 int main()
 {
-	int *p;//合法，指针可以不初始化
-	//int &a;//不合法，引用必须初始化
-	//int &a = 3;//不合法，非常量引用的初始值必须为左值
-	int x = 0;
-	int &c = x;//合法
-
-	A const aclass(1,1);//常对象,不能被更新
-	//aclass.x = 0;//不合法，
-	//cout << aclass.x << endl;
-
-	A a(5, 4);
-	a.print();  //调用void print()
-	//只能能通过常对象调用常成员函数
-	const A b(20, 52);
-	b.print();  //调用void print() const
-
+	//孩子的评分（有顺序）
+	vector<int> grade = {1,2,3,0,3,2,1};//实际分糖果结果为1 2 3 1 3 2 1=13
+	int candyNum=divideCandy(grade);
+	cout << "一共需要糖果" << candyNum <<"个"<< endl;
 	system("pause");
 	return 0;
 	
