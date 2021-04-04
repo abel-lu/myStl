@@ -1,45 +1,30 @@
 #include<iostream>
 #include<vector>
 #include <numeric>
+#include <algorithm>
 using namespace std;
+//反转二进制数字
+//输入: 00000010100101000001111010011100
+//	输出 : 00111001011110000010100101000000
+//	解释 : 输入的二进制串 00000010100101000001111010011100 表示无符号整数 43261596，
+//	因此返回 964176192，其二进制表示形式为 00111001011110000010100101000000。
 
-//一群孩子站成一排，每一个孩子有自己的评分。现在需要给这些孩子发糖果，规则是如果一
-//个孩子的评分比自己身旁的一个孩子要高，那么这个孩子就必须得到比身旁孩子更多的糖果；所
-//有孩子至少要有一个糖果。求解最少需要多少个糖果
-
-int divideCandy(vector<int>& grade)
-{
-	int size = grade.size();
-	if(size < 2) return size;
-
-	int n = grade.size();//n个小朋友
-	vector<int> candy(n,1);
-	/*思路：
-		从左到右遍历，右侧分数高的孩子比左边孩子多一个
-		再，从右到左遍历，
-	*/
-	for (int i = 0; i < n-1 ; i++)
-	{
-		(grade[i+1] > grade[i]) ? candy[i+1]= candy[i]+1:i;
-	}
-	for (int i = n-1; i > 0; i--)
-	{
-		if (grade[i-1] > grade[i])
-		{
-			if (!(candy[i-1] > candy[i]))
-				candy[i-1] = candy[i]+1;
-		}
-	}
-	int sum = accumulate(candy.begin(), candy.end(), 0);
-	return sum;
-}
+const uint32_t M1 = 0x55555555; // 01010101010101010101010101010101
+const uint32_t M2 = 0x33333333; // 00110011001100110011001100110011
+const uint32_t M4 = 0x0f0f0f0f; // 00001111000011110000111100001111
+const uint32_t M8 = 0x00ff00ff; // 00000000111111110000000011111111
 
 int main()
 {
-	//孩子的评分（有顺序）
-	vector<int> grade = {1,2,3,0,3,2,1};//实际分糖果结果为1 2 3 1 3 2 1=13
-	int candyNum=divideCandy(grade);
-	cout << "一共需要糖果" << candyNum <<"个"<< endl;
+	uint32_t x,y,n = 43261596;
+	//计算顺序
+	//x=(n >> 1)& M1; 取偶数位到奇数位
+	//y =(n & M1)<<1;取奇数位到偶数位
+	//n = x|y;结合，实现奇偶互换
+	n = n >> 1 & M1 | (n & M1) << 1;
+	n = n >> 2 & M2 | (n & M2) << 2;//实现两两互换
+	n = n >> 4 & M4 | (n & M4) << 4;
+	n = n >> 8 & M8 | (n & M8) << 8;
 	system("pause");
 	return 0;
 	
