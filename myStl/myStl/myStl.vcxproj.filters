@@ -20,9 +20,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="list.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="allocator.h">
       <Filter>头文件</Filter>
     </ClInclude>
