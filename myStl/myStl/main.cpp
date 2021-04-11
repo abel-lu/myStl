@@ -1,59 +1,61 @@
 ﻿#include<iostream>
 #include<vector>
+#include<unordered_map>
 #include <numeric>
 #include <algorithm>
 using namespace std;
-//一支弓箭可以沿着 x 轴从不同点完全垂直地射出。在坐标 x 处射出一支箭，
-//若有一个气球的直径的开始和结束坐标为 xstart，xend，
-//且满足  xstart ≤ x ≤ xend，则该气球会被引爆。可以射出的弓箭的数量没有限制。 
-//弓箭一旦被射出之后，可以无限地前进。我们想找到使得所有气球全部被引爆，所需的弓箭的最小数量。
+//字符串 S 由小写字母组成。我们要把这个字符串划分为尽可能多的片段
+//同一字母最多出现在一个片段中。返回一个表示每个字符串片段的长度的列表。
 
-//给你一个数组 points ，其中 points[i] = [xstart, xend] ，
-//返回引爆所有气球所必须射出的最小弓箭数。
+//输入：S = "ababcbacadefegdehijhklij"
+//输出：[9, 7, 8]
+//解释：
+//划分结果为 "ababcbaca", "defegde", "hijhklij"。
+//每个字母最多出现在一个片段中。
+//像 "ababcbacadefegde", "hijhklij" 的划分是错误的，因为划分的片段数较少。
 
-//输入：points = [[10, 16], [2, 8], [1, 6], [7, 12]]
-//输出：2
-//解释：对于该样例，x = 6 可以射爆[2, 8], [1, 6] 两个气球，以及 x = 11 射爆另外两个气球
-
-
-//思路：打气球即，找重叠区间问题，让重叠区间合成一个区间，
-//将所有区间按右区间排序，依次比较区间，如果后一个区间和前一个重叠，直接移除后一个区间即可实现功能
-int eraseOverlap(vector<vector<int>>& points)
+vector<int> cutstring(string s)
 {
-	if (points.empty())
+	if (s.empty()) return vector<int>(0);
+	vector<int> cutvec;
+	unordered_map<char, int> map;
+	int size = s.size();
+	//用哈希map记录每个字符出现的最后位置
+	for (int i = 0; i<size; i++)
 	{
-		return 0;
+		map[s[i]] = i;
 	}
-	int size = points.size();
-	//自定义排序规则：按照数组第二个值的大小排列，在本题中即按区间结尾升序排列
-	sort(points.begin(), points.end(), [](vector<int> a, vector<int> b) {
-		return a[1] < b[1];
-	});
-	int pre = points[0][1];
-	int count = 0;//需要移出的区间个数
-	for (int i = 1; i < size; i++)
+	//map的key个数
+	//int s_count = map.size();
+	int loc= map[s[0]],pos=0,j=0;//划分字符串的位置
+	//cutvec.push_back(loc);//记录第一个划分位置
+	while(1)
 	{
-
-		if (points[i][0] > pre)
+		for (j = pos; j < loc; j++)
 		{
-			//区间不重叠，更新pre为当前区间的结尾
-			pre = points[i][1];
+			if (map[s[j]] > loc)
+			{
+				//更新当前字符段的最远位置
+				loc = map[s[j]];
+			}
 		}
-		else
-		{
-			//如果后一个区间不超过前一个区间，合并区间
-			count++;
-		}
+		j++;
+		cutvec.push_back(loc-pos);
+		pos = loc;
+		loc = map[s[j]];
+		if (j == size) break;
 	}
-	return size - count;
+	cutvec[0]++;
+	return cutvec;
 }
 
 int main()
 {
-	vector<vector<int>> points = { {10,16},{2,8},{1,6},{7,12} };
-	int num=eraseOverlap(points);
-	cout << "需要" << num << "个弓箭" << endl;
+	vector<int> cutNum;
+	string S = "ababcbacadefegdehijhklij";
+	cutNum = cutstring(S);
+	int i = 0;
 	system("pause");
 	return 0;
-	
+
 }
