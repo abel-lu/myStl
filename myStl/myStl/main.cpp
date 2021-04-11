@@ -14,15 +14,15 @@ using namespace cv::cuda;
 
 
 //读取视频路径
-string path = "E://数据集//pdaction//Ballfangen_catch_u_cm_np1_fr_goo_1.avi";
+string path = "E://数据集//pdaction//Acrobacias_de_un_fenomeno_cartwheel_f_cm_np1_fr_bad_3.avi";
 //保存图像帧路径
-string imagePath = "E://数据集//pdrgb//Ballfangen_catch_u_cm_np1_fr_goo_1//";
+string imagePath = "E://数据集//pdrgb//Acrobacias_de_un_fenomeno_cartwheel_f_cm_np1_fr_bad_3//";
 //保存光流帧路径
 //string flowPath = "E://数据集//pdflow//2//";
 //保存光流帧x路径
-string xPath = "E://数据集//pdflow//x//";
+string xPath = "E://数据集//pdflow//Acrobacias_de_un_fenomeno_cartwheel_f_cm_np1_fr_bad_3//";
 //保存光流帧y路径
-string yPath = "E://数据集//pdflow//y//";
+string yPath = "E://数据集//pdflow//Acrobacias_de_un_fenomeno_cartwheel_f_cm_np1_fr_bad_3//";
 
 
 void convertFlowToImage(const Mat &flow, Mat &img_x, Mat &img_y, double lowerBound, double higherBound) 
@@ -58,7 +58,7 @@ int main(int argc, char * argv[]) {
 
 	capture.read(frame);
 	cvtColor(frame, prev, CV_BGR2GRAY);//转二值图
-	cv::imwrite(imagePath+"img_00001.jpg", frame);//
+	//cv::imwrite(imagePath+"img_00001.jpg", frame);//
 	int h = frame.rows;
 	int w = frame.cols;
 
@@ -83,7 +83,7 @@ int main(int argc, char * argv[]) {
 		stringstream ss;
 		ss << setw(5) << setfill('0') << num;
 		str = ss.str();
-		cv::imwrite(imagePath + "img_" + str + ".jpg", frame);//保存帧图像
+		//cv::imwrite(imagePath + "img_" + str + ".jpg", frame);//保存帧图像
 		//计算光流
 		tvl1->calc(prev, curr, d_flow);
 		Mat img_x(h, w, CV_8UC1);
@@ -94,8 +94,8 @@ int main(int argc, char * argv[]) {
 		sflow << setw(5) << setfill('0') << flownum;
 		strflow = sflow.str();
 		convertFlowToImage(d_flow, img_x, img_y, -15, 15);
-		cv::imwrite(yPath + "flow_y" + strflow + ".jpg", img_y);
-		cv::imwrite(xPath + "flow_x" + strflow + ".jpg", img_x);
+		cv::imwrite(yPath + "flow_y_" + strflow + ".jpg", img_y);
+		cv::imwrite(xPath + "flow_x_" + strflow + ".jpg", img_x);
 
 		prev = curr.clone();
 		num++;
@@ -109,53 +109,3 @@ int main(int argc, char * argv[]) {
 	return 0;
 }
 
-
-
-//
-//int main(int argc, const char* argv[])
-//{
-//	if (argc < 3)
-//	{
-//		cerr << "Usage : " << argv[0] << "<frame0> <frame1> [<output_flow>]" << endl;
-//		return -1;
-//	}
-//
-//	Mat frame0 = imread(argv[1], IMREAD_GRAYSCALE);
-//	Mat frame1 = imread(argv[2], IMREAD_GRAYSCALE);
-//
-//	if (frame0.empty())
-//	{
-//		cerr << "Can't open image [" << argv[1] << "]" << endl;
-//		return -1;
-//	}
-//	if (frame1.empty())
-//	{
-//		cerr << "Can't open image [" << argv[2] << "]" << endl;
-//		return -1;
-//	}
-//
-//	if (frame1.size() != frame0.size())
-//	{
-//		cerr << "Images should be of equal sizes" << endl;
-//		return -1;
-//	}
-//
-//	Mat_<Point2f> flow;
-//	Ptr<DenseOpticalFlow> tvl1 = createOptFlow_DualTVL1();
-//
-//	const double start = (double)getTickCount();
-//	tvl1->calc(frame0, frame1, flow);
-//	const double timeSec = (getTickCount() - start) / getTickFrequency();
-//	cout << "calcOpticalFlowDual_TVL1 : " << timeSec << " sec" << endl;
-//
-//	Mat out;
-//	drawOpticalFlow(flow, out);
-//
-//	if (argc == 4)
-//		writeOpticalFlowToFile(flow, argv[3]);
-//
-//	imshow("Flow", out);
-//	waitKey();
-//
-//	return 0;
-//}
