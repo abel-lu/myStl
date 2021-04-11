@@ -1,54 +1,65 @@
 ﻿#include<iostream>
 #include<vector>
+#include<string>
 using namespace std;
-
-
-int function(vector<vector<int>>& score)
+//破解情报问题
+string function(string& s)
 {
-	vector<int> grade(5, 0);
-	int max, min;
-	int n = score.size();
-	for (int i = 0; i < 5; i++)
+	if (s.empty()) return 0;
+	int size = s.size();
+	char x = s[0];
+	if ((x > 64) && (x < 91))
 	{
-		//取每个维度的第一本书值
-		max = score[0][i];
-		for (int j = 0; j < n; j++)
+		char move = x - 64;
+		for (int i = 0; i < size; i++)
 		{
-			//获得每个维度最大值
-			if (score[j][i] > max)
+			if ((s[i] > 64) && (s[i] < 91))
 			{
-				max = score[j][i];
+				s[i] += move;
+				s[i]>90? s[i] -= 26:s[i];
+			}
+			else if ((s[i] > 47) && (s[i] < 58))
+			{
+				move %= 10;
+				s[i] += move;
+				s[i] > 57 ? s[i] -= 10 : s[i];
 			}
 		}
-		grade[i] = max;
 	}
-	min = grade[0];
-	for (int i = 0; i < 5; i++)
+	else if ((x > 47) && (x < 58))
 	{
-		if (min > grade[i])
+		char move = x - '0';
+		for (int i = 0; i < size; i++)
 		{
-			min = grade[i];
+			if ((s[i] > 64) && (s[i] < 91))
+			{
+				s[i] += move;
+				s[i]>90 ? s[i] -= 26 : s[i];
+			}
+			else if ((s[i] > 47) && (s[i] < 58))
+			{
+				s[i] += move;
+				s[i] > 57 ? s[i] -= 10 : s[i];
+			}
 		}
 	}
-	return min;
+	else
+	{
+		for (int i = 1; i < size; i++)
+		{
+			s[i] += 1;
+		}	
+	}
+	return s;
 }
 
 int main()
 {
-	int n;
-	cin >> n;
-	if (n < 1) return 0;
-	//cout << n;
-	vector<vector<int>> score(n, vector<int>(5, 0));
-	for (int i = 0; i < n; i++)
-	{
-		for (int j = 0; j < 5; j++)
-		{
-			cin >> score[i][j];
-		}
-	}
-	int grade = function(score);
-	cout << grade;
+	string x,s;
+	cin >> x;
+
+	s = function(x);
+	cout << s;
 	system("pause");
 	return 0;
 
