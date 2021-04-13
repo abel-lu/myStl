@@ -14,15 +14,15 @@ using namespace cv::cuda;
 
 
 //读取视频路径
-string path = "E://数据集//pdaction//Acrobacias_de_un_fenomeno_cartwheel_f_cm_np1_fr_bad_3.avi";
+string path = "D://FFOutput//原视频//20190919_082450//VID_20190919_082450左手捏手指.mp4";
 //保存图像帧路径
-string imagePath = "E://数据集//pdrgb//Acrobacias_de_un_fenomeno_cartwheel_f_cm_np1_fr_bad_3//";
+string imagePath = "D://FFOutput//frames//3//";
 //保存光流帧路径
 //string flowPath = "E://数据集//pdflow//2//";
 //保存光流帧x路径
-string xPath = "E://数据集//pdflow//Acrobacias_de_un_fenomeno_cartwheel_f_cm_np1_fr_bad_3//";
+string xPath = "D://FFOutput//flow//3//";
 //保存光流帧y路径
-string yPath = "E://数据集//pdflow//Acrobacias_de_un_fenomeno_cartwheel_f_cm_np1_fr_bad_3//";
+string yPath = "D://FFOutput//flow//3//";
 
 
 void convertFlowToImage(const Mat &flow, Mat &img_x, Mat &img_y, double lowerBound, double higherBound) 
@@ -44,6 +44,14 @@ void convertFlowToImage(const Mat &flow, Mat &img_x, Mat &img_y, double lowerBou
 
 #undef CAST
 }
+void resize(Mat& src)
+{
+	//resize(src, src, cv::Size(720, 1280), INTER_AREA);
+	Rect rect(600, 180, 640, 480);   //区域的左上角点的坐标为（10,10）							   //区域宽为150，高为100
+	src = src(rect);
+	return;
+}
+
 
 int main(int argc, char * argv[]) {
 	vector<Mat> flow;
@@ -57,8 +65,9 @@ int main(int argc, char * argv[]) {
 	}
 
 	capture.read(frame);
+	resize(frame);
 	cvtColor(frame, prev, CV_BGR2GRAY);//转二值图
-	//cv::imwrite(imagePath+"img_00001.jpg", frame);//
+	cv::imwrite(imagePath+"img_00001.jpg", frame);//
 	int h = frame.rows;
 	int w = frame.cols;
 
@@ -78,12 +87,13 @@ int main(int argc, char * argv[]) {
 		Mat out;
 
 		capture >> frame;
+		resize(frame);
 		cvtColor(frame, curr, CV_BGR2GRAY);
 		imshow("sur", frame);
 		stringstream ss;
 		ss << setw(5) << setfill('0') << num;
 		str = ss.str();
-		//cv::imwrite(imagePath + "img_" + str + ".jpg", frame);//保存帧图像
+		cv::imwrite(imagePath + "img_" + str + ".jpg", frame);//保存帧图像
 		//计算光流
 		tvl1->calc(prev, curr, d_flow);
 		Mat img_x(h, w, CV_8UC1);
