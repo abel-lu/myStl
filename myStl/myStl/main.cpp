@@ -1,60 +1,74 @@
 ﻿#include<iostream>
 #include<vector>
 #include<unordered_map>
-#include <numeric>
-#include <algorithm>
+#include<numeric>
+#include<algorithm>
 using namespace std;
-//字符串 S 由小写字母组成。我们要把这个字符串划分为尽可能多的片段
-//同一字母最多出现在一个片段中。返回一个表示每个字符串片段的长度的列表。
 
-//输入：S = "ababcbacadefegdehijhklij"
-//输出：[9, 7, 8]
-//解释：
-//划分结果为 "ababcbaca", "defegde", "hijhklij"。
-//每个字母最多出现在一个片段中。
-//像 "ababcbacadefegde", "hijhklij" 的划分是错误的，因为划分的片段数较少。
+//假设有打乱顺序的一群人站成一个队列，数组 people 表示队列中一些人的属性（不一定按顺序）。
+//每个 people[i] = [hi, ki] 表示第 i 个人的身高为 hi ，前面 正好 有 ki 个身高大于或等于 hi 的人。
+//
+//请你重新构造并返回输入数组 people 所表示的队列。
+//返回的队列应该格式化为数组 queue ，
+//其中 queue[j] = [hj, kj] 是队列中第 j 个人的属性（queue[0] 是排在队列前面的人）。
 
-vector<int> cutstring(string s)
-{
-	if (s.empty()) return vector<int>(0);
-	vector<int> cutvec;
-	unordered_map<char, int> map;
-	int size = s.size();
-	//用哈希map记录每个字符出现的最后位置
-	for (int i = 0; i<size; i++)
+//输入：people = [[7, 0], [4, 4], [7, 1], [5, 0], [6, 1], [5, 2]]
+//输出：[[5, 0], [7, 0], [5, 2], [6, 1], [4, 4], [7, 1]]
+
+
+class Solution {
+public:
+
+	static bool compare(vector<int>& a, vector<int>& b)
 	{
-		map[s[i]] = i;
-	}
-	//map的key个数
-	//int s_count = map.size();
-	int loc= map[s[0]],pos=0,j=0;//划分字符串的位置
-	//cutvec.push_back(loc);//记录第一个划分位置
-	while(1)
-	{
-		for (j = pos; j < loc; j++)
+		if (a[0]<b[0])
 		{
-			if (map[s[j]] > loc)
-			{
-				//更新当前字符段的最远位置
-				loc = map[s[j]];
-			}
+			return false;
 		}
-		j++;
-		cutvec.push_back(loc-pos);
-		pos = loc;
-		loc = map[s[j]];
-		if (j == size) break;
+		else if (a[0]>b[0])
+		{
+			return true;
+		}
+		else {
+			if (a[1]>b[1])
+			{
+				return false;
+			}
+			else return true;
+		}
 	}
-	cutvec[0]++;
-	return cutvec;
-}
+
+	vector<vector<int>> reconstructQueue(vector<vector<int>>& people) {
+		
+		//先按右区间升序排序，如果相等，按左区间升序
+		int size = people.size();
+		if (size < 2) return people;
+		sort(people.begin(),people.end(), compare);
+		vector<vector<int>> s;
+		
+
+		for (int i = 0; i < size; i++)
+		{
+			int pos = people[i][1];
+			s.insert(s.begin() + pos, people[i]);
+			//cout << people[i][0];
+		}
+		return s;
+
+	}
+};
+
 
 int main()
 {
-	vector<int> cutNum;
-	string S = "ababcbacadefegdehijhklij";
-	cutNum = cutstring(S);
-	int i = 0;
+	vector<vector<int>> people = { {7,0},{4,4},{7,1},{5,0},{6,1},{5,2} };
+	vector<vector<int>> sortPeo;
+	Solution solu;
+	sortPeo=solu.reconstructQueue(people);
+	for (int i = 0; i < sortPeo.size(); i++)
+	{	
+		cout << sortPeo[i][0] << sortPeo[i][1] << endl;;
+	}
 	system("pause");
 	return 0;
 
