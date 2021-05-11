@@ -67,7 +67,7 @@ int main()
 	sortPeo=solu.reconstructQueue(people);
 	for (int i = 0; i < sortPeo.size(); i++)
 	{	
-		cout << sortPeo[i][0] << sortPeo[i][1] << endl;;
+		cout << sortPeo[i][0] <<","<< sortPeo[i][1] << endl;;
 	}
 	system("pause");
 	return 0;
