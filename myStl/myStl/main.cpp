@@ -1,23 +1,18 @@
-#include<iostream>
+ï»¿#include<iostream>
 #include<vector>
 #include <numeric>
 using namespace std;
 
-//Ò»Èºº¢×ÓÕ¾³ÉÒ»ÅÅ£¬Ã¿Ò»¸öº¢×ÓÓĞ×Ô¼ºµÄÆÀ·Ö¡£ÏÖÔÚĞèÒª¸øÕâĞ©º¢×Ó·¢ÌÇ¹û£¬¹æÔòÊÇÈç¹ûÒ»
-//¸öº¢×ÓµÄÆÀ·Ö±È×Ô¼ºÉíÅÔµÄÒ»¸öº¢×ÓÒª¸ß£¬ÄÇÃ´Õâ¸öº¢×Ó¾Í±ØĞëµÃµ½±ÈÉíÅÔº¢×Ó¸ü¶àµÄÌÇ¹û£»Ëù
-//ÓĞº¢×ÓÖÁÉÙÒªÓĞÒ»¸öÌÇ¹û¡£Çó½â×îÉÙĞèÒª¶àÉÙ¸öÌÇ¹û
+
 
 int divideCandy(vector<int>& grade)
 {
 	int size = grade.size();
 	if(size < 2) return size;
 
-	int n = grade.size();//n¸öĞ¡ÅóÓÑ
+	int n = grade.size();//
 	vector<int> candy(n,1);
-	/*Ë¼Â·£º
-		´Ó×óµ½ÓÒ±éÀú£¬ÓÒ²à·ÖÊı¸ßµÄº¢×Ó±È×ó±ßº¢×Ó¶àÒ»¸ö
-		ÔÙ£¬´ÓÓÒµ½×ó±éÀú£¬
-	*/
+
 	for (int i = 0; i < n-1 ; i++)
 	{
 		(grade[i+1] > grade[i]) ? candy[i+1]= candy[i]+1:i;
@@ -36,10 +31,10 @@ int divideCandy(vector<int>& grade)
 
 int main()
 {
-	//º¢×ÓµÄÆÀ·Ö£¨ÓĞË³Ğò£©
-	vector<int> grade = {1,2,3,0,3,2,1};//Êµ¼Ê·ÖÌÇ¹û½á¹ûÎª1 2 3 1 3 2 1=13
+
+	vector<int> grade = {1,2,3,0,3,2,1};
 	int candyNum=divideCandy(grade);
-	cout << "Ò»¹²ĞèÒªÌÇ¹û" << candyNum <<"¸ö"<< endl;
+	cout << "candyNum " << candyNum <<" "<< endl;
 	system("pause");
 	return 0;
 	
