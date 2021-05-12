@@ -5,70 +5,38 @@
 #include<algorithm>
 using namespace std;
 
-//假设有打乱顺序的一群人站成一个队列，数组 people 表示队列中一些人的属性（不一定按顺序）。
-//每个 people[i] = [hi, ki] 表示第 i 个人的身高为 hi ，前面 正好 有 ki 个身高大于或等于 hi 的人。
-//
-//请你重新构造并返回输入数组 people 所表示的队列。
-//返回的队列应该格式化为数组 queue ，
-//其中 queue[j] = [hj, kj] 是队列中第 j 个人的属性（queue[0] 是排在队列前面的人）。
+//给定一个数组 prices ，它的第 i 个元素 prices[i] 表示一支给定股票第 i 天的价格。
+//你只能选择 某一天 买入这只股票，并选择在 未来的某一个不同的日子 卖出该股票。设计一个算法来计算你所能获取的最大利润。
+//返回你可以从这笔交易中获取的最大利润。如果你不能获取任何利润，返回 0 。
 
-//输入：people = [[7, 0], [4, 4], [7, 1], [5, 0], [6, 1], [5, 2]]
-//输出：[[5, 0], [7, 0], [5, 2], [6, 1], [4, 4], [7, 1]]
+//输入：[7, 1, 5, 3, 6, 4]
+//输出：5
+//解释：在第 2 天（股票价格 = 1）的时候买入，在第 5 天（股票价格 = 6）的时候卖出，最大利润 = 6 - 1 = 5 。
+//注意利润不能是 7 - 1 = 6, 因为卖出价格需要大于买入价格；同时，你不能在买入前卖出股票。
+
 
 
 class Solution {
 public:
-
-	static bool compare(vector<int>& a, vector<int>& b)
-	{
-		if (a[0]<b[0])
+	int maxProfit(vector<int>& prices) {
+		int size = prices.size(), ans = 0;
+		int maxprice=0,minprice = prices[0];
+		for (int price : prices)
 		{
-			return false;
+			maxprice = max(maxprice, price - minprice);
+			minprice = min(minprice, price);
 		}
-		else if (a[0]>b[0])
-		{
-			return true;
-		}
-		else {
-			if (a[1]>b[1])
-			{
-				return false;
-			}
-			else return true;
-		}
-	}
-
-	vector<vector<int>> reconstructQueue(vector<vector<int>>& people) {
-		
-		//先按右区间升序排序，如果相等，按左区间升序
-		int size = people.size();
-		if (size < 2) return people;
-		sort(people.begin(),people.end(), compare);
-		vector<vector<int>> s;
-		
-
-		for (int i = 0; i < size; i++)
-		{
-			int pos = people[i][1];
-			s.insert(s.begin() + pos, people[i]);
-			//cout << people[i][0];
-		}
-		return s;
-
+		return maxprice;
 	}
 };
 
-
 int main()
 {
-	vector<vector<int>> people = { {7,0},{4,4},{7,1},{5,0},{6,1},{5,2} };
-	vector<vector<int>> sortPeo;
+	vector<int> people = { 7,1,5,3,6,4 };
+	int sortPeo;
 	Solution solu;
-	sortPeo=solu.reconstructQueue(people);
-	for (int i = 0; i < sortPeo.size(); i++)
-	{	
-		cout << sortPeo[i][0] <<","<< sortPeo[i][1] << endl;;
-	}
+	sortPeo=solu.maxProfit(people);
+	cout << sortPeo<<endl;
 	system("pause");
 	return 0;
 
