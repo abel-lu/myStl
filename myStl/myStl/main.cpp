@@ -5,82 +5,77 @@
 #include<algorithm>
 using namespace std;
 
-//给你一个长度为 n 的整数数组，请你判断在最多改变 1 个元素的情况下，该数组能否变成一个非递减数列。
-//
-//我们是这样定义一个非递减数列的： 对于数组中任意的 i(0 <= i <= n - 2)，总满足 nums[i] <= nums[i + 1]。
+//给定一个已按照 升序排列  的整数数组 numbers ，请你从数组中找出两个数满足相加之和等于目标数 target 。
+//函数应该以长度为 2 的整数数组的形式返回这两个数的下标值。
+//numbers 的下标 从 1 开始计数 ，所以答案数组应当满足 1 <= answer[0] < answer[1] <= numbers.length 。
 
 
-//输入: nums = [4, 2, 3]
-//	输出 : true
-//	解释 : 你可以通过把第一个4变成1来使得它成为一个非递减数列。
+
+//输入：numbers = [2, 7, 11, 15], target = 9
+//输出：[1, 2]
+//解释：2 与 7 之和等于目标数 9 。因此 index1 = 1, index2 = 2
 
 
 class Solution {
 public:
-	//方法一，遍历一遍，去掉扰乱数组的元素，再遍历一次剩下的数组
-	/*bool checkPossibility(vector<int>& nums) {
-		int size = nums.size();
-		if (size < 2) return true;
-		vector<int> v1,v2;
-		int num = -1;
-		v2.push_back(nums[0]);
-		for (int i = 1; i < size; i++)
+
+	//方法一，暴力法，
+	//vector<int> twoSum(vector<int>& numbers, int target) {
+	//	vector<int> index(2,0);
+	//	int n = numbers.size();
+
+	//	for (int i = 0; i < n; i++)
+	//	{
+	//		for (int j = i+1; j < n; j++)
+	//		{
+	//			if (numbers[i] + numbers[j] == target)
+	//			{
+	//				index[0] = i;
+	//				index[1] = j;
+	//			}
+	//			if ((numbers[i] + numbers[j]) >target)
+	//			{
+	//				continue;
+	//				//j = i + 1;
+	//			}
+	//		}
+	//	}
+	//	return index;
+	//}
+
+	vector<int> twoSum(vector<int>& numbers, int target) {
+		vector<int> index(2,0);
+		int n = numbers.size();
+
+		for (int i = 0, j = n; i < n, j >-1; )
 		{
-			if (nums[i] < nums[i-1])
+			if (numbers[i] + numbers[j] == target)
 			{
-				num++;
+				index[0] = i+1;
+				index[1] = j+1;
+				return index;
+			}
+			else if ((numbers[i] + numbers[j]) > target)
+			{
+				j--;
 			}
 			else
 			{
-				v1.push_back(nums[i - 1]);
-				v2.push_back(nums[i]);
+				i++;
 			}
 		}
-		if (num > 0) return false;
-		v1.push_back(nums[size - 1]); 
-		bool a=true,b=true;
-		for (int i = 1; i < v1.size(); i++)
-		{
-			if (v1[i] < v1[i - 1])
-				a = false;
-			if (v2[i] < v2[i - 1])
-				b = false;
-		}
-		return a || b;
-	}*/
-
-	//方法2，遍历一次，
-	bool checkPossibility(vector<int>& nums) {
-		int size = nums.size();
-		if (size < 2) return true;
-		int num = -1;
-		for (int i = 1; i < size; i++)
-		{
-			if (nums[i] < nums[i - 1])
-			{
-				num++;
-				
-				if(i>1&&(nums[i] < nums[i - 2]))
-				{
-					nums[i] = nums[i - 1];
-				}
-				/*else
-				{
-					nums[i - 1] = nums[i];
-				}*/
-			}
-		}	
-		return num<1;
+		return vector<int>{-1,-1 };
 	}
+
 };
 
 int main()
 {
-	vector<int> nums = { 4,2,3 };
-	bool sortPeo;
+	vector<int> nums = { 1,2,3,4,4,9,56,90 };
+	vector<int> sortPeo;
 	Solution solu;
-	sortPeo=solu.checkPossibility(nums);
-	cout << sortPeo<<endl;
+	sortPeo=solu.twoSum(nums,8);
+	//cout << sortPeo<<endl;
 	system("pause");
 	return 0;
 
