@@ -14,108 +14,89 @@ using namespace cv::cuda;
 
 
 //读取视频路径
-string path = "D://FFOutput//原视频//20190919_082450//VID_20190919_082450左手捏手指.mp4";
+string path1 = "E://素材//12//T202009031102862681.bmp";
 //保存图像帧路径
-string imagePath = "D://FFOutput//frames//3//";
+string path2 = "E://素材//12//T202009031102862562.bmp";
 //保存光流帧路径
 //string flowPath = "E://数据集//pdflow//2//";
 //保存光流帧x路径
-string xPath = "D://FFOutput//flow//3//";
+string path3 = "E://素材//12//T202009031102862442.bmp";
 //保存光流帧y路径
-string yPath = "D://FFOutput//flow//3//";
+string path4 = "E://素材//12//T202009031102862316.bmp";
 
-
-void convertFlowToImage(const Mat &flow, Mat &img_x, Mat &img_y, double lowerBound, double higherBound) 
-{
-//cvRound()函数，即四舍五入函数
-//int x = (v) < (L) ? 0 : cvRound(255*((v) - (L))
-//如果v大于L，v-L乘以255后四舍五入（取整）
-//int y = (v) > (H) ? 255 : x
-//如果v小于H，则取x,否则取255
-//以上为v,L,H的关系
-#define CAST(v, L, H) ((v) > (H) ? 255 : (v) < (L) ? 0 : cvRound(255*((v) - (L))/((H)-(L))))
-
-	for (int i = 0; i < img_x.rows; ++i) {
-		for (int j = 0; j < img_x.cols; ++j) {
-			img_x.at<uchar>(i, j) = CAST(flow.at<Point2f>(i, j).x, lowerBound, higherBound);
-			img_y.at<uchar>(i, j) = CAST(flow.at<Point2f>(i, j).x, lowerBound, higherBound);
-		}
-	}
-
-#undef CAST
-}
-void resize(Mat& src)
-{
-	//resize(src, src, cv::Size(720, 1280), INTER_AREA);
-	Rect rect(600, 180, 640, 480);   //区域的左上角点的坐标为（10,10）							   //区域宽为150，高为100
-	src = src(rect);
-	return;
-}
 
 
 int main(int argc, char * argv[]) {
-	vector<Mat> flow;
-	Mat prev, curr, frame;
-	cv::Ptr<cv::DualTVL1OpticalFlow> tvl1 = cv::DualTVL1OpticalFlow::create();
 
-	VideoCapture  capture(path);
-	if (!capture.isOpened()) {
-		cout << "Read video failed" << endl;
-		return -1;
+	Mat image1 = cv::imread(path1);
+	Mat image2 = cv::imread(path2);
+	Mat image3 = cv::imread(path3);
+	Mat image4 = cv::imread(path4);
+	Mat res1, res2, res3, res4;
+	//Mat image1 = cv::imread(path1);
+	Mat element = getStructuringElement(MORPH_RECT, Size(11, 11));
+	dilate(image1, res1, element);
+	dilate(image2, res2, element);
+	dilate(image3, res3, element);
+	dilate(image4, res4, element);
+
+	Mat hou1, hou2, hou3, hou4;
+
+	cvtColor(res1, hou1, CV_BGR2GRAY);//转二值图
+	cvtColor(res2, hou2, CV_BGR2GRAY);//转二值图
+	cvtColor(res3, hou3, CV_BGR2GRAY);//转二值图
+	cvtColor(res4, hou4, CV_BGR2GRAY);//转二值图
+
+
+
+	Mat line1, line2, line3, line4;
+
+	cv::HoughLinesP(hou1, line1, 1, CV_PI / 180, 80, 50, 10);
+	cv::HoughLinesP(hou2, line2, 1, CV_PI / 180, 80, 50, 10);
+	cv::HoughLinesP(hou3, line3, 1, CV_PI / 180, 80, 50, 10);
+	cv::HoughLinesP(hou4, line4, 1, CV_PI / 180, 80, 50, 10);
+
+	int x1, y1, x2, y2;
+	//cvtColor(frame, prev, CV_BGR2GRAY);//转二值图
+	//cv::imwrite(imagePath+"img_00001.jpg", frame);//
+	for (int i = 0; i < line1.rows; i++)
+	{
+		x1 = line1.at<Vec4i>(i, 0)[0];
+		y1 = line1.at<Vec4i>(i, 0)[1];
+		x2 = line1.at<Vec4i>(i, 0)[2];
+		y2 = line1.at<Vec4i>(i, 0)[3];
+		cv::line(res1, Point(x1, y1), Point(x2, y2), Scalar(0, 255, 255), 2);
+	}
+	for (int i = 0; i < line4.rows; i++)
+	{
+		x1 = line4.at<Vec4i>(i, 0)[0];
+		y1 = line4.at<Vec4i>(i, 0)[1];
+		x2 = line4.at<Vec4i>(i, 0)[2];
+		y2 = line4.at<Vec4i>(i, 0)[3];
+		cv::line(res4, Point(x1, y1), Point(x2, y2), Scalar(0, 255, 255), 2);
+	}
+	for (int i = 0; i < line2.rows; i++)
+	{
+		x1 = line2.at<Vec4i>(i, 0)[0];
+		y1 = line2.at<Vec4i>(i, 0)[1];
+		x2 = line2.at<Vec4i>(i, 0)[2];
+		y2 = line2.at<Vec4i>(i, 0)[3];
+		cv::line(res2, Point(x1, y1), Point(x2, y2), Scalar(0, 255, 255), 2);
+	}
+	for (int i = 0; i < line3.rows; i++)
+	{
+		x1 = line3.at<Vec4i>(i, 0)[0];
+		y1 = line3.at<Vec4i>(i, 0)[1];
+		x2 = line3.at<Vec4i>(i, 0)[2];
+		y2 = line3.at<Vec4i>(i, 0)[3];
+		cv::line(res3, Point(x1, y1), Point(x2, y2), Scalar(0, 255, 255), 2);
 	}
 
-	capture.read(frame);
-	resize(frame);
-	cvtColor(frame, prev, CV_BGR2GRAY);//转二值图
-	cv::imwrite(imagePath+"img_00001.jpg", frame);//
-	int h = frame.rows;
-	int w = frame.cols;
-
-	clock_t begin, end;
-	begin = clock();//计时
-	int frameNum = 2;//取两帧用来计算光流
-	//设置视频流的参数，第一个参数代表设置视频的第几个参数，
-	//CAP_PROP_POS_FRAMES是设置捕获的帧的基于0的索引。设为2，即从第二帧开始读取
-	capture.set(CAP_PROP_POS_FRAMES, frameNum);
-	//获取视频帧数
-	int count = capture.get(CAP_PROP_FRAME_COUNT);
-	int fps = capture.get(5);	//CV_CAP_PROP_FPS 帧速率
-	string str,strflow;
-	int num = 2,flownum=1;
-	while (num < count) {
-		Mat d_flow;
-		Mat out;
-
-		capture >> frame;
-		resize(frame);
-		cvtColor(frame, curr, CV_BGR2GRAY);
-		imshow("sur", frame);
-		stringstream ss;
-		ss << setw(5) << setfill('0') << num;
-		str = ss.str();
-		cv::imwrite(imagePath + "img_" + str + ".jpg", frame);//保存帧图像
-		//计算光流
-		tvl1->calc(prev, curr, d_flow);
-		Mat img_x(h, w, CV_8UC1);
-		Mat img_y(h, w, CV_8UC1);
-
-
-		stringstream sflow;
-		sflow << setw(5) << setfill('0') << flownum;
-		strflow = sflow.str();
-		convertFlowToImage(d_flow, img_x, img_y, -15, 15);
-		cv::imwrite(yPath + "flow_y_" + strflow + ".jpg", img_y);
-		cv::imwrite(xPath + "flow_x_" + strflow + ".jpg", img_x);
-
-		prev = curr.clone();
-		num++;
-		flownum++;
-		waitKey(30);
-	}
-
-	end = clock();
-	std::cout << "total frames: " << num << endl;
-	std::cout << "time used: " << (double)(end - begin) / CLOCKS_PER_SEC << endl;
+	cv::imwrite("E://素材//12//res1.jpg", res1);
+	cv::imwrite("E://素材//12//res2.jpg", res3);
+	cv::imwrite("E://素材//12//res3.jpg", res2);
+	cv::imwrite("E://素材//12//res4.jpg", res4);
+	
 	return 0;
 }
 
