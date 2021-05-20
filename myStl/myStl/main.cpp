@@ -23,10 +23,24 @@ public:
 	string minWindow(string s, string t) {
 		int ss = s.size();
 		int tt = t.size();
-		for (int i = 0, j = 0; i < ss,j << tt;)
-		{
 
+		unordered_map<char, int> map,need;
+		//用，map存储t
+		for (auto x : t)
+		{
+			map[x]++;
 		}
+		need = map;
+		int left,right,pos,dis;
+		while (right < ss)
+		{
+			if (map[s[left]] != 0)
+			{
+				map[s[left]]--;
+				dis++;
+			}
+		}
+		return " ";
 	}
 };
 
