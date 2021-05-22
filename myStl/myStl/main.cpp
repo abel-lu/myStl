@@ -23,24 +23,65 @@ public:
 	string minWindow(string s, string t) {
 		int ss = s.size();
 		int tt = t.size();
-
+		if (ss == 0 || tt == 0 || ss < tt) return "";
 		unordered_map<char, int> map,need;
 		//用，map存储t
 		for (auto x : t)
 		{
 			map[x]++;
 		}
-		need = map;
-		int left,right,pos,dis;
+		//need = map;
+		int left = 0, right = 0, pos;
+		int count=0,min=ss+1;
 		while (right < ss)
 		{
-			if (map[s[left]] != 0)
+			char a = s[right];
+			if (map[a] == 0)
 			{
-				map[s[left]]--;
-				dis++;
+
+				right++;
+				continue;
+				/*map[a]--;
+				pos = left;
+				dis=right-left;*/
 			}
+			if (need[a] < map[a])
+			{
+				count++;
+			}
+			need[a]++;
+			right++;
+
+			while (count == tt)
+			{
+				if (right - left < min)
+				{
+					min = right - left;
+					pos = left;
+				}
+
+				char b = s[left];
+				if (map[b] == 0)
+				{
+					left++;
+					continue;
+				}
+				if (need[b] == map[b])
+				{
+					count--;
+				}
+				need[b]--;
+				left++;
+			}
+			
+			
 		}
-		return " ";
+		if (min == ss+1)
+		{
+			return "";
+		}
+		return s.substr(pos, min);
+		
 	}
 };
 
@@ -48,8 +89,8 @@ int main()
 {
 	solution solu;
 
-	string s = "ADOBECODEBANC";
-	string t = "ABC";
+	string s = "a";//"ADOBECODEBANC";
+	string t = "C";
 
 	string result=solu.minWindow(s,t);
 	cout << result << endl;
