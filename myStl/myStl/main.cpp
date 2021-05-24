@@ -7,35 +7,76 @@
 #include <math.h>
 using namespace std;
 
-////给定一个非负整数 c ，你要判断是否存在两个整数 a 和 b，使得 a^2 + b^2 = c 。
+//给定一个非空字符串 s，最多删除一个字符。判断是否能成为回文字符串。
 //
-//输入：c = 5
-//输出：true
-//解释：1 * 1 + 2 * 2 = 5
+//输入: "abca"
+//	输出 : True
+//	解释 : 你可以删除c字符。
 
 class solution
 {
 public:
-	bool judgeSquareSum(int c) {
-		if (c == 0) return true;
-		int s = sqrt(c);
-		long i, j;
-		while(i <= j)
+	bool validPalindrome(string s) {
+		string ss = s;
+		int n = s.size();
+		if (n < 2) return true;
+		int count=0;
+		int left=0,right=n-1,l1,r1;
+		bool b1=true,b2=true;
+		//判断字符串是否互文，如果不互文，分情况讨论
+		while(left<right)
 		{
-			if ((j*j + i*i) == c)
+			if (s[left] != s[right])
 			{
-				return true;
-			}
-			else if ((j*j + i*i) > c)
-			{
-				j--;
+				count++;
+				break;
 			}
 			else
 			{
-				i++;
+				left++;
+				right--;
+			}
+			
+		}	
+		//不互文的情况
+		if (count > 0)
+		{
+			l1 = left;
+			r1 = right-1;
+			left++;
+			//第一种，删除前面的
+			while (left<right)
+			{
+				if (s[left] != s[right])
+				{
+					b1=false;
+					break;
+				}
+				else
+				{
+					left++;
+					right--;
+				}
+
+			}
+			//第二种删除后面的
+			while (l1<r1)
+			{
+				if (s[l1] != s[r1])
+				{
+					b2=false;
+					break;
+				}
+				else
+				{
+					l1++;
+					r1--;
+				}
 			}
 		}
-		return false;
+		//两种有一种可以互文即true
+		return b1 || b2;
+		
 	}
 };
 
@@ -43,8 +84,8 @@ int main()
 {
 	solution solu;
 
-	int x = 5;
-	bool result=solu.judgeSquareSum(x);
+	string x = "abc";
+	bool result=solu.validPalindrome(x);
 	cout << result << endl;
 	system("pause");
 	return 0;
