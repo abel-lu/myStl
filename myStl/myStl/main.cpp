@@ -89,8 +89,8 @@ int main()
 {
 	solution solu;
 
-	string s = "a";//"ADOBECODEBANC";
-	string t = "C";
+	string s = "ADOBECODEBANC";
+	string t = "ABC";
 
 	string result=solu.minWindow(s,t);
 	cout << result << endl;
