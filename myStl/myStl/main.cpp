@@ -7,76 +7,81 @@
 #include <math.h>
 using namespace std;
 
-//给定一个非空字符串 s，最多删除一个字符。判断是否能成为回文字符串。
-//
-//输入: "abca"
-//	输出 : True
-//	解释 : 你可以删除c字符。
+//给定一个字符串和一个字符串字典，找到字典里面最长的字符串，
+//该字符串可以通过删除给定字符串的某些字符来得到。
+//如果答案不止一个，返回长度最长且字典顺序最小的字符串。如果答案不存在，则返回空字符串。
+
+
+/*输入:
+s = "abpcplea", d = ["ale", "apple", "monkey", "plea"]
+
+输出 :
+	"apple"
+*/
 
 class solution
 {
 public:
-	bool validPalindrome(string s) {
-		string ss = s;
+	string findLongestWord(string s, vector<string>& dictionary) {
+		unordered_map<char, int> smap,temp;
 		int n = s.size();
-		if (n < 2) return true;
-		int count=0;
-		int left=0,right=n-1,l1,r1;
-		bool b1=true,b2=true;
-		//判断字符串是否互文，如果不互文，分情况讨论
-		while(left<right)
+		int count,max=0,pos=-1;
+		//储存s的map
+		for (int i = 0; i < n; i++)
 		{
-			if (s[left] != s[right])
-			{
-				count++;
-				break;
-			}
-			else
-			{
-				left++;
-				right--;
-			}
-			
-		}	
-		//不互文的情况
-		if (count > 0)
+			smap[s[i]]++;
+		}
+		int d = dictionary.size();
+		for (int i = 0; i < d; i++)
 		{
-			l1 = left;
-			r1 = right-1;
-			left++;
-			//第一种，删除前面的
-			while (left<right)
+			count = 0;
+			temp = smap;
+			string str = dictionary[i];
+			for (int j = 0,l=0; j < str.size(),l<n;)
 			{
-				if (s[left] != s[right])
+				//判断是否是子串
+				if (str[j] == s[l])
 				{
-					b1=false;
-					break;
+					count++;
+					l++;
+					j++;
 				}
 				else
 				{
-					left++;
-					right--;
+					l++;
 				}
-
 			}
-			//第二种删除后面的
-			while (l1<r1)
+			if (count < str.size())
 			{
-				if (s[l1] != s[r1])
+				count = 0;
+			}
+			//判断字符串最长，或者字典序最短
+			if (count >= max)
+			{
+				if (count == max)
 				{
-					b2=false;
-					break;
+					for (int k = 0; k < count; k++)
+					{
+						if (dictionary[pos][k] > dictionary[i][k])
+						{
+							pos = i;
+							break;
+						}
+						else if(dictionary[pos][k] < dictionary[i][k])
+						{
+							break;
+						}
+					}
 				}
-				else
-				{
-					l1++;
-					r1--;
+				else {
+					//优先字符串最长，然后是位置
+					max = count;
+					pos = i;
 				}
 			}
 		}
-		//两种有一种可以互文即true
-		return b1 || b2;
-		
+		if (pos == -1) return "";
+		return dictionary[pos];
 	}
 };
 
@@ -84,8 +89,9 @@ int main()
 {
 	solution solu;
 
-	string x = "abc";
-	bool result=solu.validPalindrome(x);
+	string s = "aewfafwafjlwajflwajflwafj";
+	vector<string> dictionary = { "apple","ewaf","awefawfwaf","awef","awefe","ewafeffewafewf"};
+	string result = solu.findLongestWord(s, dictionary);
 	cout << result << endl;
 	system("pause");
 	return 0;
