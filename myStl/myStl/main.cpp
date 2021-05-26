@@ -7,81 +7,82 @@
 #include <math.h>
 using namespace std;
 
-//给定一个字符串和一个字符串字典，找到字典里面最长的字符串，
-//该字符串可以通过删除给定字符串的某些字符来得到。
-//如果答案不止一个，返回长度最长且字典顺序最小的字符串。如果答案不存在，则返回空字符串。
+//给定一个按照升序排列的整数数组 nums，和一个目标值 target。找出给定目标值在数组中的开始位置和结束位置。
+//如果数组中不存在目标值 target，返回 [-1, -1]。
 
 
-/*输入:
-s = "abpcplea", d = ["ale", "apple", "monkey", "plea"]
 
-输出 :
-	"apple"
-*/
+
+//输入：nums = [5, 7, 7, 8, 8, 10], target = 8
+//输出：[3, 4]
 
 class solution
 {
 public:
-	string findLongestWord(string s, vector<string>& dictionary) {
-		unordered_map<char, int> smap,temp;
-		int n = s.size();
-		int count,max=0,pos=-1;
-		//储存s的map
+	vector<int> searchRange(vector<int>& nums, int target) {
+		//方法1	，暴力
+		/*int n = nums.size();
+		if (n < 1)return { -1,-1 };
+		int count=0,res;
 		for (int i = 0; i < n; i++)
 		{
-			smap[s[i]]++;
+			if (nums[i] == target)
+			{
+				count++;
+				res = i;
+			}
+			else if(nums[i]>target)
+			{
+				break;
+			}
 		}
-		int d = dictionary.size();
-		for (int i = 0; i < d; i++)
+		if (count == 0) return{ -1,-1 };
+		res = res - count + 1;
+		return { res,res+count-1 };*/
+
+		//二分查找
+		int n = nums.size();
+		if (n < 1)return { -1,-1 };
+		int count=0,res=0;
+		//定义左右区间
+		int left = 0,right = n-1,mid;
+		
+		while(left<=right)
 		{
-			count = 0;
-			temp = smap;
-			string str = dictionary[i];
-			for (int j = 0,l=0; j < str.size(),l<n;)
+			mid = (right+left) / 2;
+			if (nums[mid] < target)
 			{
-				//判断是否是子串
-				if (str[j] == s[l])
-				{
-					count++;
-					l++;
-					j++;
-				}
-				else
-				{
-					l++;
-				}
+				left = mid+1;
 			}
-			if (count < str.size())
+			else if(nums[mid]>target)
 			{
-				count = 0;
+				right = mid-1;
 			}
-			//判断字符串最长，或者字典序最短
-			if (count >= max)
+			else
 			{
-				if (count == max)
-				{
-					for (int k = 0; k < count; k++)
-					{
-						if (dictionary[pos][k] > dictionary[i][k])
-						{
-							pos = i;
-							break;
-						}
-						else if(dictionary[pos][k] < dictionary[i][k])
-						{
-							break;
-						}
-					}
-				}
-				else {
-					//优先字符串最长，然后是位置
-					max = count;
-					pos = i;
-				}
+				count++;
+				break;
 			}
 		}
-		if (pos == -1) return "";
-		return dictionary[pos];
+		if (count > 0)
+		{
+			count = mid;
+			while (count < nums.size() && nums[count] == target)
+			{
+				res++;
+				count++;
+			}
+			while (mid < nums.size() && nums[mid] == target)
+			{
+				res++;
+				mid--;
+				count=mid;
+			}
+		}
+
+		if (res == 0) return{ -1,-1 };
+		count++;
+		return { count,count+res-2 };
 	}
 };
 
@@ -89,10 +90,10 @@ int main()
 {
 	solution solu;
 
-	string s = "aewfafwafjlwajflwajflwafj";
-	vector<string> dictionary = { "apple","ewaf","awefawfwaf","awef","awefe","ewafeffewafewf"};
-	string result = solu.findLongestWord(s, dictionary);
-	cout << result << endl;
+	vector<int> nums = { 5, 7, 7, 8, 8, 10 };
+	int target = 6;
+	vector<int> result = solu.searchRange(nums, target);
+	//cout << result << endl;
 	system("pause");
 	return 0;
 
