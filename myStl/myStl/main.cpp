@@ -7,82 +7,66 @@
 #include <math.h>
 using namespace std;
 
-//给定一个按照升序排列的整数数组 nums，和一个目标值 target。找出给定目标值在数组中的开始位置和结束位置。
-//如果数组中不存在目标值 target，返回 [-1, -1]。
+//已知存在一个按非降序排列的整数数组 nums ，数组中的值不必互不相同。
+//
+//在传递给函数之前，nums 在预先未知的某个下标 k（0 <= k < nums.length）上进行了
+//	旋转 ，使数组变为[nums[k], nums[k + 1], ..., nums[n - 1], nums[0], nums[1], ..., nums[k - 1]]
+//	（下标 从 0 开始 计数）。
+//	例如，[0, 1, 2, 4, 4, 4, 5, 6, 6, 7] 在下标 5 处经旋转后可能变为[4, 5, 6, 6, 7, 0, 1, 2, 4, 4] 。
+//
+//	给你 旋转后 的数组 nums 和一个整数 target ，请你编写一个函数来判断给定的目标值是否存在于数组中。
+//	如果 nums 中存在这个目标值 target ，则返回 true ，否则返回 false 。
 
+	
 
-
-
-//输入：nums = [5, 7, 7, 8, 8, 10], target = 8
-//输出：[3, 4]
+//输入：nums = [2, 5, 6, 0, 0, 1, 2], target = 0
+//输出：true
 
 class solution
 {
 public:
-	vector<int> searchRange(vector<int>& nums, int target) {
-		//方法1	，暴力
-		/*int n = nums.size();
-		if (n < 1)return { -1,-1 };
-		int count=0,res;
-		for (int i = 0; i < n; i++)
-		{
-			if (nums[i] == target)
-			{
-				count++;
-				res = i;
-			}
-			else if(nums[i]>target)
-			{
-				break;
-			}
-		}
-		if (count == 0) return{ -1,-1 };
-		res = res - count + 1;
-		return { res,res+count-1 };*/
 
-		//二分查找
+	//方法1暴力
+
+
+	//方法2，二分
+	bool search(vector<int>& nums, int target) {
 		int n = nums.size();
-		if (n < 1)return { -1,-1 };
-		int count=0,res=0;
-		//定义左右区间
-		int left = 0,right = n-1,mid;
-		
-		while(left<=right)
-		{
-			mid = (right+left) / 2;
-			if (nums[mid] < target)
-			{
-				left = mid+1;
+		if (n == 0) {
+			return false;
+		}
+		if (n == 1) {
+			return nums[0] == target;
+		}
+		int left = 0, right = n - 1;
+		while (left <= right) {
+			int mid = (left + right) / 2;
+			if (nums[mid] == target) {
+				return true;
 			}
-			else if(nums[mid]>target)
-			{
-				right = mid-1;
+			if (nums[left] == nums[mid] && nums[mid] == nums[right]) {
+				++left;
+				--right;
 			}
-			else
-			{
-				count++;
-				break;
+			else if (nums[left] <= nums[mid]) {
+				if (nums[left] <= target && target < nums[mid]) {
+					right = mid - 1;
+				}
+				else {
+					left = mid + 1;
+				}
+			}
+			else {
+				if (nums[mid] < target && target <= nums[n - 1]) {
+					left = mid + 1;
+				}
+				else {
+					right = mid - 1;
+				}
 			}
 		}
-		if (count > 0)
-		{
-			count = mid;
-			while (count < nums.size() && nums[count] == target)
-			{
-				res++;
-				count++;
-			}
-			while (mid < nums.size() && nums[mid] == target)
-			{
-				res++;
-				mid--;
-				count=mid;
-			}
-		}
+		return false;
 
-		if (res == 0) return{ -1,-1 };
-		count++;
-		return { count,count+res-2 };
 	}
 };
 
@@ -90,11 +74,11 @@ int main()
 {
 	solution solu;
 
-	vector<int> nums = { 5, 7, 7, 8, 8, 10 };
-	int target = 6;
-	vector<int> result = solu.searchRange(nums, target);
+	vector<int> nums = { 1,0,1,1,1 };
+	int target = 0;
+	bool result = solu.search(nums, target);
 	//cout << result << endl;
+
 	system("pause");
 	return 0;
-
 }
