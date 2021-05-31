@@ -8,73 +8,47 @@
 using namespace std;
 
 
-//已知一个长度为 n 的数组，预先按照升序排列，经由 1 到 n 次 旋转 后，得到输入数组。例如，原数组 nums = [0, 1, 4, 4, 5, 6, 7] 在变化后可能得到：
-//若旋转 4 次，则可以得到[4, 5, 6, 7, 0, 1, 4]
-//若旋转 7 次，则可以得到[0, 1, 4, 4, 5, 6, 7]
-//注意，数组[a[0], a[1], a[2], ..., a[n - 1]] 旋转一次 的结果为数组[a[n - 1], a[0], a[1], a[2], ..., a[n - 2]] 。
-//
-//给你一个可能存在 重复 元素值的数组 nums ，它原来是一个升序排列的数组，并按上述情形进行了多次旋转。请你找出并返回数组中的 最小元素 。
+//给定一个只包含整数的有序数组，每个元素都会出现两次，唯有一个数只会出现一次，找出这个数。
 
-//输入：nums = [1, 3, 5]
-//输出：1
+//输入: [1, 1, 2, 3, 3, 4, 4, 8, 8]
+//	输出 : 2
 
 class solution
 {
 public:
 
-	//方法1暴力
-
-
-	//方法2，二分
-	//先找旋转数组的特点，只有4种可能，
-	/* 1 -------
-
-				---
-			--	   
-	   2 --
-
-	   3 --		---
-			---
-
-	   4	---
-	     --
-						--
-					---
-				---
-	*/
-	int findMin(vector<int>& nums) {
-		int n = nums.size();
-		if (n ==1) return nums[0];
-		int left=0, right=n-1;
-		int min = nums[0];
-		while (left <= right)
+	int singleNonDuplicate(vector<int>& nums) {
+		//暴力法
+		/*int n = nums.size();
+		if (n == 1) return nums[0];
+		if (nums[0] != nums[1]) return nums[0];
+		for (int i = 2; i < n-2; i+2)
 		{
-			int mid = (left + right) / 2;
-			if (nums[mid] < min)
+			if (nums[i] != nums[i + 1])
 			{
-				right = mid - 1;
-				min = nums[mid];
+				return nums[i];
+			}
+		}
+		return nums[n-1];*/
+
+		//二分法
+		int n = nums.size();
+		int left = 0,right = n - 1,mid;
+		while (left < right)
+		{
+			mid = left+(right-left) / 2;
+			if (mid % 2 == 1) mid--;
+			if (nums[mid] == nums[mid + 1])
+			{
+				left = mid+2;
 			}
 			else
 			{
-				if (nums[left] < nums[right])
-				{
-					right = mid - 1;
-				}
-				else if (nums[left] > nums[right])
-				{
-					left = mid + 1;
-				}
-				else
-				{
-					right--;
-					left++;
-				}
+				right = mid;
+				
 			}
-			
 		}
-		return min;
-
+		return nums[left];
 	}
 };
 
@@ -82,9 +56,9 @@ int main()
 {
 	solution solu;
 
-	vector<int> nums = { 1,2,1 };
+	vector<int> nums = { 1,1,2,3,3,4,4,8,8};
 	int target = 0;
-	int result = solu.findMin(nums);
+	int result = solu.singleNonDuplicate(nums);
 	//cout << result << endl;
 
 	system("pause");
