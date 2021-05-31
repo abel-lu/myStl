@@ -1,18 +1,18 @@
-#include<iostream>
+ï»¿#include<iostream>
 #include<vector>
 using namespace std;
 
-//»ñÈ¡×Ó´®µÄnextÊı×é
+
 void getNext(string s,vector<int>& next)
 {
-	//×Ó´®µÚÒ»¸öÆ¥ÅäÖµÒ»¶¨Îª0
+
 	next.push_back(0);
 	int n = s.size();
 	for (int i = 1,j=0; i < n;)
 	{
 		if (s[i] == s[j])
 		{
-			//Èç¹ûÇ°×ºÂëÆ¥Åä£¬nextÖµ¼ÓÒ»
+
 			int x = next[i-1] + 1;
 			next.push_back(x);
 			j++;
@@ -22,22 +22,21 @@ void getNext(string s,vector<int>& next)
 		{
 			if (j == 0)
 			{
-				//Ã»ÓĞÆ¥Åäµ½Ç°×ºÂë£¬Ò»Ö±push0£¬i++,j=0²»¶¯£¬¼ÌĞøÏÂÒ»¸öµÄÆ¥Åä
+
 				next.push_back(0);
 				i++;
 				j = 0;
 			}
 			else
 			{
-				//Ç°Ãæ¶¼ÊÇÆ¥ÅäµÄ£¬³öÏÖ²»Æ¥Åäºó£¬jÇå0,iÎ»ÖÃ²»±ä
-				//´ÓiÎ»ÖÃÔÙ¼ÆËãÊÇ·ñºÍj=0Æ¥Åä
+	
 				j = 0;
 			}
 		}
 	}
 }
 
-//KMPÆ¥ÅäËã·¨
+
 bool KMPmatch(string mstring, string sstring)
 {
 	vector<int> next;
@@ -45,26 +44,25 @@ bool KMPmatch(string mstring, string sstring)
 	if(mstring.empty() || sstring.empty()) return false;
 	int m = mstring.size();
 	int n = sstring.size();
-	getNext(sstring, next);//»ñÈ¡×Ó´®next
+	getNext(sstring, next);
 	for (int i = 0, j = 0; i < m && j < n;)
 	{
 		if (mstring[i] == sstring[j])
 		{
-			//×Ó´®ºÍÄ¾´®Æ¥Åä
+
 			i++;
 			j++;
-			//×Ó´®È«²¿Æ¥Åä£¬·µ»Øtrue
+
 			if (j == n) 
 				return true;
 		}
 		else
 		{
-			//µ±Ç°²»Æ¥ÅäÓĞÁ½ÖÖÇé¿ö£¬j=0Ê±ÊÇÇ°ÃæÒ²²»Æ¥Åä£¬×Ó´®Ã»ÓĞÒÆ¶¯¹ı£¬Ä¸´®iÎ»ÖÃÖ±½Ó++¼´¿É
-			//j!=0Ê±£¬Ç°ÃæÊÇÆ¥ÅäµÄ£¬ÏÖÔÚ²»Æ¥ÅäÁË£¬Ä¸´®iÎ»ÖÃ²»¶¯£¬×Ó´®·µ»Øµ½next´æ´¢µÄÎ»ÖÃ¡£
+			
 			j == 0 ? i++ : j = next[j-1];
 		}
 	}
-	//Ñ­»·½áÊø£¬Ã»ÓĞÍêÈ«Æ¥Åä
+
 	return false;
 }
 int main() {
