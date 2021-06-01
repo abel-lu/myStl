@@ -8,47 +8,55 @@
 using namespace std;
 
 
-//给定一个只包含整数的有序数组，每个元素都会出现两次，唯有一个数只会出现一次，找出这个数。
+//给定两个大小分别为 m 和 n 的正序（从小到大）数组 nums1 和 nums2。请你找出并返回这两个正序数组的 中位数 。
 
-//输入: [1, 1, 2, 3, 3, 4, 4, 8, 8]
-//	输出 : 2
+
+//输入：nums1 = [1, 3], nums2 = [2]
+//输出：2.00000
+//解释：合并数组 = [1, 2, 3] ，中位数 2
 
 class solution
 {
 public:
 
-	int singleNonDuplicate(vector<int>& nums) {
-		//暴力法
-		/*int n = nums.size();
-		if (n == 1) return nums[0];
-		if (nums[0] != nums[1]) return nums[0];
-		for (int i = 2; i < n-2; i+2)
+	double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
+		int n1 = nums1.size();
+		int n2 = nums2.size();
+		int n = (n1 + n2) / 2;
+		vector<int> nums;
+		for (int i = 0, j = 0;;)
 		{
-			if (nums[i] != nums[i + 1])
+			if ((i > n1 - 1)&&(j < n2 ))
 			{
-				return nums[i];
+				nums.push_back(nums2[j]);
+				j++;
 			}
-		}
-		return nums[n-1];*/
-
-		//二分法
-		int n = nums.size();
-		int left = 0,right = n - 1,mid;
-		while (left < right)
-		{
-			mid = left+(right-left) / 2;
-			if (mid % 2 == 1) mid--;
-			if (nums[mid] == nums[mid + 1])
+			else if ((j > n2 - 1 )&&( i < n1 ))
 			{
-				left = mid+2;
+				nums.push_back(nums1[i]);
+				i++;
 			}
 			else
 			{
-				right = mid;
-				
+
+				if (nums1[i] < nums2[j])
+				{
+					nums.push_back(nums1[i]);
+					i++;
+				}
+				else
+				{
+					nums.push_back(nums2[j]);
+					j++;
+				}
 			}
+			if (nums.size() == n+1) break;
 		}
-		return nums[left];
+		if ((n1 + n2) % 2 == 0)
+		{
+			return double(nums[n] + nums[n - 1]) / 2;
+		}
+		return nums[n];
 	}
 };
 
@@ -56,9 +64,10 @@ int main()
 {
 	solution solu;
 
-	vector<int> nums = { 1,1,2,3,3,4,4,8,8};
+	vector<int> nums1 = { };
+	vector<int> nums2 = {1};
 	int target = 0;
-	int result = solu.singleNonDuplicate(nums);
+	double result = solu.findMedianSortedArrays(nums1, nums2);
 	//cout << result << endl;
 
 	system("pause");
