@@ -19,7 +19,11 @@ class solution
 public:
 
 	int findKthLargest(vector<int>& nums, int k) {
+		//1.调用函数
+		sort(nums.begin(), nums.end(), [](int a, int b) { return a > b; });
+		return nums[k-1];
 
+		//1.找到第k个数，只需要排到k,后面不需要排序
 	}
 };
 
