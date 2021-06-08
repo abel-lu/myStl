@@ -21,7 +21,7 @@ public:
 	{
 		int temp = nums[l];
 		nums[l] = nums[r];
-		nums[r] = nums[l];
+		nums[r] = temp;
 	}
 
 	int qsort(vector<int>& nums, int left, int right)
@@ -30,15 +30,18 @@ public:
 		int compare = nums[left];
 		while (l < r)
 		{
-			while (nums[l]>compare && l<r)
-			{
-				l++;
-			}
-			while(nums[r]<compare && l<r)
+			while (nums[r]<=compare && l<r)
 			{
 				r--;
 			}
-			swap(nums, l, r);
+			while (nums[l]>=compare && l<r)
+			{
+				l++;
+			}
+			if (l < r)
+			{
+				swap(nums, l, r);
+			}
 		}
 		swap(nums, left, l);
 		return l;
@@ -49,7 +52,7 @@ public:
 		while (left < right)
 		{
 			int mid = qsort(nums, left, right);
-			quicksort(nums, left, mid);
+			quicksort(nums, left, mid-1);
 			quicksort(nums, mid + 1, right);
 		}
 	}
