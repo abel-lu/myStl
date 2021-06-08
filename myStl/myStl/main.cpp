@@ -30,11 +30,11 @@ public:
 		int compare = nums[left];
 		while (l < r)
 		{
-			while (nums[r]<=compare && l<r)
+			while (nums[r]>=compare && l<r)
 			{
 				r--;
 			}
-			while (nums[l]>=compare && l<r)
+			while (nums[l]<=compare && l<r)
 			{
 				l++;
 			}
