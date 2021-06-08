@@ -66,7 +66,7 @@ int partion(vector<int>& nums, int left, int right)
 	//交换比较元素
 	swap(nums, i, left);
 
-	return j;
+	return i;
 
 }
 
