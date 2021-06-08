@@ -30,11 +30,11 @@ public:
 		int compare = nums[left];
 		while (l < r)
 		{
-			while (nums[r]>=compare && l<r)
+			while (nums[r]<=compare && l<r)
 			{
 				r--;
 			}
-			while (nums[l]<=compare && l<r)
+			while (nums[l]>=compare && l<r)
 			{
 				l++;
 			}
@@ -47,13 +47,20 @@ public:
 		return l;
 	}
 
-	void quicksort(vector<int>& nums, int left,int right)
+	void quicksort(vector<int>& nums, int left,int right,int k)
 	{
-		while (left < right)
+		if(left < right)
 		{
 			int mid = qsort(nums, left, right);
-			quicksort(nums, left, mid-1);
-			quicksort(nums, mid + 1, right);
+			if (k > mid)
+			{
+				quicksort(nums, mid + 1, right, k);
+			}
+			else
+			{
+				quicksort(nums, left, mid - 1, k);
+			}
+			
 		}
 	}
 
@@ -64,9 +71,8 @@ public:
 
 		//1.找到第k个数，只需要排到k,后面不需要排序
 		int left = 0, right = nums.size();
-		quicksort(nums, left, right-1);
-
-		return 0;
+		quicksort(nums, left, right-1,k);
+		return nums[k-1];
 	}
 };
 
