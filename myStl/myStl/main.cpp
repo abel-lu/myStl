@@ -43,7 +43,7 @@ public:
 				swap(nums, l, r);
 			}
 		}
-		swap(nums, left, l);
+		swap(nums, l, left);
 		return l;
 	}
 
