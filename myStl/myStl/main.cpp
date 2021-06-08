@@ -17,13 +17,53 @@ using namespace std;
 class solution
 {
 public:
+	void swap(vector<int>& nums, int l, int r)
+	{
+		int temp = nums[l];
+		nums[l] = nums[r];
+		nums[r] = nums[l];
+	}
+
+	int qsort(vector<int>& nums, int left, int right)
+	{
+		int l = left, r = right;	
+		int compare = nums[left];
+		while (l < r)
+		{
+			while (nums[l]>compare && l<r)
+			{
+				l++;
+			}
+			while(nums[r]<compare && l<r)
+			{
+				r--;
+			}
+			swap(nums, l, r);
+		}
+		swap(nums, left, l);
+		return l;
+	}
+
+	void quicksort(vector<int>& nums, int left,int right)
+	{
+		while (left < right)
+		{
+			int mid = qsort(nums, left, right);
+			quicksort(nums, left, mid);
+			quicksort(nums, mid + 1, right);
+		}
+	}
 
 	int findKthLargest(vector<int>& nums, int k) {
 		//1.调用函数
-		sort(nums.begin(), nums.end(), [](int a, int b) { return a > b; });
-		return nums[k-1];
+		//sort(nums.begin(), nums.end(), [](int a, int b) { return a > b; });
+		//return nums[k-1];
 
 		//1.找到第k个数，只需要排到k,后面不需要排序
+		int left = 0, right = nums.size();
+		quicksort(nums, left, right-1);
+
+		return 0;
 	}
 };
 
