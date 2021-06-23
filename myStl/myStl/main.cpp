@@ -8,73 +8,51 @@
 using namespace std;
 
 
-//已知一个长度为 n 的数组，预先按照升序排列，经由 1 到 n 次 旋转 后，得到输入数组。例如，原数组 nums = [0, 1, 4, 4, 5, 6, 7] 在变化后可能得到：
-//若旋转 4 次，则可以得到[4, 5, 6, 7, 0, 1, 4]
-//若旋转 7 次，则可以得到[0, 1, 4, 4, 5, 6, 7]
-//注意，数组[a[0], a[1], a[2], ..., a[n - 1]] 旋转一次 的结果为数组[a[n - 1], a[0], a[1], a[2], ..., a[n - 2]] 。
-//
-//给你一个可能存在 重复 元素值的数组 nums ，它原来是一个升序排列的数组，并按上述情形进行了多次旋转。请你找出并返回数组中的 最小元素 。
+//给定一个字符串，请将字符串里的字符按照出现的频率降序排列。
 
-//输入：nums = [1, 3, 5]
-//输出：1
+//输入:
+//"tree"
+//
+//输出 :
+//	"eert"
 
 class solution
 {
 public:
 
 	//方法1暴力
-
-
-	//方法2，二分
-	//先找旋转数组的特点，只有4种可能，
-	/* 1 -------
-
-				---
-			--	   
-	   2 --
-
-	   3 --		---
-			---
-
-	   4	---
-	     --
-						--
-					---
-				---
-	*/
-	int findMin(vector<int>& nums) {
-		int n = nums.size();
-		if (n ==1) return nums[0];
-		int left=0, right=n-1;
-		int min = nums[0];
-		while (left <= right)
+	string frequencySort(string& s) {
+		unordered_map<char,int> map;
+		int size = s.size();
+		int max;
+		if (size < 2) return s;
+		max = 0;
+		for(auto a:s)
 		{
-			int mid = (left + right) / 2;
-			if (nums[mid] < min)
-			{
-				right = mid - 1;
-				min = nums[mid];
-			}
-			else
-			{
-				if (nums[left] < nums[right])
-				{
-					right = mid - 1;
-				}
-				else if (nums[left] > nums[right])
-				{
-					left = mid + 1;
-				}
-				else
-				{
-					right--;
-					left++;
-				}
-			}
-			
+			map[a]++;
 		}
-		return min;
+		
+		vector<char>* res= new vector<char>[s.length()+1];
+		//vector<char> res[3];
+		for (auto a: map)
+		{
+			int x = a.second;
+			res[x].push_back(a.first);
+		}
 
+		string ans;
+		int n = s.length();
+		for (int i = n; i >0 ; i--)
+		{
+			for (int j = 0; j < res[i].size(); j++)
+			{
+				for (int k = 0; k < i; k++)
+				{
+					ans += res[i][j];
+				}
+			}
+		}
+		return ans;
 	}
 };
 
@@ -83,8 +61,9 @@ int main()
 	solution solu;
 
 	vector<int> nums = { 1,2,1 };
+	string str = "eeeee";
 	int target = 0;
-	int result = solu.findMin(nums);
+	string result = solu.frequencySort(str);
 	//cout << result << endl;
 
 	system("pause");
