@@ -7,140 +7,57 @@
 #include <algorithm>
 #include <math.h>
 using namespace std;
-
 //
-//给定一个包含了一些 0 和 1 的非空二维数组 grid 。
-//
-//一个 岛屿 是由一些相邻的 1 (代表土地) 构成的组合，这里的「相邻」要求两个 1 必须在水平或者竖直方向上相邻。
-//你可以假设 grid 的四个边缘都被 0（代表水）包围着。
-
-//找到给定的二维数组中最大的岛屿面积。(如果没有岛屿，则返回面积为 0 。)
-
-//[[0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-//[0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0],
-//[0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-//[0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0],
-//[0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0],
-//[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
-//[0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0],
-//[0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0]]
-
-//6
-class Solution {
-public:
-	
-};
+//有 n 个城市，其中一些彼此相连，另一些没有相连。如果城市 a 与城市 b 直接相连，且城市 b 与城市 c 直接相连，
+//那么城市 a 与城市 c 间接相连。
+//省份 是一组直接或间接相连的城市，组内不含其他没有相连的城市。
+//给你一个 n x n 的矩阵 isConnected ，其中 isConnected[i][j] = 1 表示第 i 个城市和第 j 个城市直接相连，
+//而 isConnected[i][j] = 0 表示二者不直接相连。
+//返回矩阵中 省份 的数量。
 
 
+//输入：isConnected = [[1, 1, 0], [1, 1, 0], [0, 0, 1]]
+//输出：2
 
 class solution
 {
 public:
-	int dfs(vector<vector<int>>& grid, int cur_x, int cur_y)
+	int dfs(vector<vector<int>>& isConnected,int i,int j)
 	{
-		int width = grid.size();
-		int height = grid[0].size();
-		int ans=1;
-		//返回0情况：1.超出边界，2.没有土地，0
-		if (cur_x < 0 || cur_y < 0 || cur_x >= width || cur_y >= height|| grid[cur_x][cur_y] == 0)
+		int ans = 0, num = 0;
+		isConnected[i][j] = 0;
+		for (int k = 0; k < isConnected.size(); k++)
 		{
-			return 0;
-		}
-		grid[cur_x][cur_y] = 0;
-		int dx[4] = { 0,0 ,1,-1 };
-		int dy[4] = { 1,-1,0,0 };
-		//遍历四个方向，寻找土地
-		for (int index = 0; index < 4;index++)
-		{
-			int next_x = cur_x + dx[index], next_y = cur_y + dy[index];
-			ans += dfs(grid, next_x, next_y);
-		}
-		return ans;    
-	
-	}
-	//方法1,深度优先搜索
-	int maxAreaOfIsland(vector<vector<int>>& grid) {
-		int width = grid.size();
-		int height = grid[0].size();
-		int ans = 0;
-		for (int i = 0; i < width; i++)
-		{
-			for (int j = 0; j < height; j++)
+			if (isConnected[j][k] == 1)
 			{
-					ans=max(ans,dfs(grid, i, j));
+				num++;
+				ans+=dfs(isConnected, i, j);
 			}
 		}
 		return ans;
 	}
-
-
-
-	//方法2，深度优先，用栈
-	int maxAreaOfIsland3(vector<vector<int>>& grid) {
-		int ans = 0;
-		for (int i = 0; i != grid.size(); ++i) {
-			for (int j = 0; j != grid[0].size(); ++j) {
-				int cur = 0;
-				stack<int> stacki;
-				stack<int> stackj;
-				stacki.push(i); 
-				stackj.push(j);
-				while (!stacki.empty()) {
-					int cur_i = stacki.top(), cur_j = stackj.top();
-					stacki.pop();
-					stackj.pop();
-					if (cur_i < 0 || cur_j < 0 || cur_i == grid.size() || cur_j == grid[0].size() || grid[cur_i][cur_j] != 1) {
-						continue;
-					}
-					++cur;
-					grid[cur_i][cur_j] = 0;
-					int di[4] = { 0, 0, 1, -1 };
-					int dj[4] = { 1, -1, 0, 0 };
-					for (int index = 0; index != 4; ++index) {
-						int next_i = cur_i + di[index], next_j = cur_j + dj[index];
-						stacki.push(next_i);
-						stackj.push(next_j);
-					}
+	int findCircleNum(vector<vector<int>>& isConnected) {
+		//两个城市如果相连，（i,j）和(j,i)都是1 ,只检索一个,即对角线检索
+		int cityNum = isConnected.size();//城市数量即矩阵行数，且矩阵行列相同。
+		int conNum=0;
+		for (int i = 0; i < cityNum; i++)
+		{
+			//j==i，即对角线检索
+			for (int j = i; j < cityNum; j++)
+			{
+				//对角线对应自己，肯定为1，不搜索
+				if (i == j)
+				{
+					continue;
 				}
-				ans = max(ans, cur);
-			}
-		}
-		return ans;
-	}
+				dfs(isConnected, i, j);
+				if (isConnected[i][j] == 1)
+				{
 
-	//方法3，广度优先搜索，用队列
-	int maxAreaOfIsland(vector<vector<int>>& grid) {
-		int ans = 0;
-		for (int i = 0; i != grid.size(); ++i) {
-			for (int j = 0; j != grid[0].size(); ++j) {
-				int cur = 0;
-				queue<int> queuei;
-				queue<int> queuej;
-				queuei.push(i);
-				queuej.push(j);
-				while (!queuei.empty()) {
-					int cur_i = queuei.front(), cur_j = queuej.front();
-					queuei.pop();
-					queuej.pop();
-					if (cur_i < 0 || cur_j < 0 || cur_i == grid.size() || cur_j == grid[0].size() || grid[cur_i][cur_j] != 1) {
-						continue;
-					}
-					++cur;
-					grid[cur_i][cur_j] = 0;
-					int di[4] = { 0, 0, 1, -1 };
-					int dj[4] = { 1, -1, 0, 0 };
-					for (int index = 0; index != 4; ++index) {
-						int next_i = cur_i + di[index], next_j = cur_j + dj[index];
-						queuei.push(next_i);
-						queuej.push(next_j);
-					}
 				}
-				ans = max(ans, cur);
 			}
 		}
-		return ans;
 	}
-
 };
 
 int main()
@@ -148,10 +65,10 @@ int main()
 	solution solu;
 
 	vector<int> nums = { 2,0,2,1,1,0 };
-	vector<vector<int>> num = { {0,0,0,1},{0,1,1,0},{0,1,0,1} };
+	vector<vector<int>> num = { {1,1,0},{1,1,0},{0,0,1} };
 	string str = "eeeee";
 	int target = 0;
-	int result=solu.maxAreaOfIsland2(num);
+	int result=solu.findCircleNum(num);
 	//cout << result << endl;
 
 	system("pause");
