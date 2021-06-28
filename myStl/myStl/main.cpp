@@ -22,50 +22,65 @@ using namespace std;
 class solution
 {
 public:
-	int dfs(vector<vector<int>>& isConnected,int i,int j)
-	{
-		int ans = 0, num = 0;
-		isConnected[i][j] = 0;
-		for (int k = 0; k < isConnected.size(); k++)
-		{
-			if (isConnected[j][k] == 1)
-			{
-				num++;
-				ans+=dfs(isConnected, i, j);
-			}
-		}
-		return ans;
-	}
-	int findCircleNum(vector<vector<int>>& isConnected) {
-		//两个城市如果相连，（i,j）和(j,i)都是1 ,只检索一个,即对角线检索
-		int cityNum = isConnected.size();//城市数量即矩阵行数，且矩阵行列相同。
-		int conNum=0;
-		for (int i = 0; i < cityNum; i++)
-		{
-			//j==i，即对角线检索
-			for (int j = i; j < cityNum; j++)
-			{
-				//对角线对应自己，肯定为1，不搜索
-				if (i == j)
-				{
-					continue;
-				}
-				dfs(isConnected, i, j);
-				if (isConnected[i][j] == 1)
-				{
 
-				}
+	void dfs1(vector<vector<int>>& isConnected, vector<int>& visited, int provinces, int i) {
+		for (int j = 0; j < provinces; j++) {
+			if (isConnected[i][j] == 1 && !visited[j]) {
+				visited[j] = 1;
+				dfs1(isConnected, visited, provinces, j);
 			}
 		}
+	}
+
+	int findCircleNum1(vector<vector<int>>& isConnected) {
+		int provinces = isConnected.size();
+		vector<int> visited(provinces);
+		int circles = 0;
+		for (int i = 0; i < provinces; i++) {
+			if (!visited[i]) {
+				dfs1(isConnected, visited, provinces, i);
+				circles++;
+			}
+		}
+		return circles;
 	}
 };
-
+//[1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
+//[1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+//[0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+//[0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+//[0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0],
+//[0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+//[0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0],
+//[1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0],
+//[0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 0],
+//[0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1],
+//[0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0],
+//[0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0],
+//[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+//[0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0],
+//[0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]]
 int main()
 {
 	solution solu;
-
+	
 	vector<int> nums = { 2,0,2,1,1,0 };
-	vector<vector<int>> num = { {1,1,0},{1,1,0},{0,0,1} };
+	vector<vector<int>> num = { { 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0 },
+	{ 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+	{ 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+	{ 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0 },
+	{ 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0 },
+	{ 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0 },
+	{ 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0 },
+	{ 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0 },
+	{ 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 0 },
+	{ 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1 },
+	{ 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0 },
+	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0 },
+	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0 },
+	{ 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0 },
+	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 },
+	};
 	string str = "eeeee";
 	int target = 0;
 	int result=solu.findCircleNum(num);
